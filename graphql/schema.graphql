@@ -4,39 +4,45 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 "Indicates what fields are available at the top level of a query operation."
 type Query {
     user(
-      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
-      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+        email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
     ): User @find
 
     users(
-      name: String @where(operator: "like")
+        name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
 
-    post(
-      id: ID @eq
-    ):Post @find
-
+    post( id: ID @eq ):Post @find
+    postResolver(id: ID!): Post
     posts(
-       title: String @where(operator: "like")
+        title: String @where(operator: "like")
     ): [Post!]! @paginate(defaultCount: 10)  @orderBy(column:"created_at", direction:"DESC")
+
+    postsResolver: [Post!]!
 }
 
 type Mutation {
-  createPost(
-    user_id: ID!
-    title: String! @rules(apply: ["required", "string", "min:3"])
-    body: String! @rules(apply: ["required", "string", "min:3"])
-  ): Post @create
+    createPost(
+        user_id: ID!
+        title: String! @rules(apply: ["required", "string", "min:3"])
+        body: String! @rules(apply: ["required", "string", "min:3"])
+    ): Post @create
 
-  updatePost(
-    id: ID!
-    title: String! @rules(apply: ["required", "string", "min:3"])
-    body: String! @rules(apply: ["required", "string", "min:3"])
-  ): Post @update
+    createPostResolver(
+        user_id: ID!
+        title: String! @rules(apply: ["required", "string", "min:3"])
+        body: String! @rules(apply: ["required", "string", "min:3"])
+    ): Post
 
-  deletePost(
-    id: ID!
-  ): Post @delete
+    updatePost(
+        id: ID!
+        title: String! @rules(apply: ["required", "string", "min:3"])
+        body: String! @rules(apply: ["required", "string", "min:3"])
+    ): Post @update
+
+    deletePost(
+        id: ID!
+    ): Post @delete
 }
 
 type User {
