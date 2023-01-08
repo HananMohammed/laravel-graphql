@@ -21,6 +21,24 @@ type Query {
     ): [Post!]! @paginate(defaultCount: 10)  @orderBy(column:"created_at", direction:"DESC")
 }
 
+type Mutation {
+  createPost(
+    user_id: ID!
+    title: String! @rules(apply: ["required", "string", "min:3"])
+    body: String! @rules(apply: ["required", "string", "min:3"])
+  ): Post @create
+
+  updatePost(
+    id: ID!
+    title: String! @rules(apply: ["required", "string", "min:3"])
+    body: String! @rules(apply: ["required", "string", "min:3"])
+  ): Post @update
+
+  deletePost(
+    id: ID!
+  ): Post @delete
+}
+
 type User {
     id: ID!
     posts: [Post!]! @hasMany
