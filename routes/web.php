@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get( '/test', function () {
+
+    $response = Http::post( "http://l.graphql.test/graphql", [
+        'query' => '
+                   query{
+                        posts
+                        {
+                              paginatorInfo{
+                                count
+                                currentPage
+                                perPage
+                                total
+
+                              }
+                              data{
+                                id
+                                title
+                                body
+                              }
+                        }
+                      }
+                  ',
+    ] );
+
+    return view('welcome', ['posts' => $response->json()['data']['posts']['data']]);
+} );
+
+
+Route::get( '/create', function () {
+
+     Http::post( "http://l.graphql.test/graphql", [
+        'query' => '
+                 mutation{
+                      createPostResolver(
+                        user_id : "1",
+                        title : "Hello From laravel  ",
+                        body : "content from laravel",
+                      ){
+                        title
+                        body
+                        id
+                      }
+                }
+                  ',
+    ] );
+
+    return redirect(url('/test'));
+} );
