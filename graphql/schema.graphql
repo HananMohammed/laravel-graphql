@@ -10,7 +10,7 @@ type Query {
 
     users(
         name: String @where(operator: "like")
-    ): [User!]! @paginate(defaultCount: 10)
+    ): [User!]! @paginate(defaultCount: 10) @guard
 
     post( id: ID @eq ):Post @find
     postResolver(id: ID!): Post
@@ -19,6 +19,8 @@ type Query {
     ): [Post!]! @paginate(defaultCount: 10)  @orderBy(column:"created_at", direction:"DESC")
 
     postsResolver: [Post!]!
+
+    me: User @guard @auth
 }
 
 type Mutation {
@@ -43,6 +45,12 @@ type Mutation {
     deletePost(
         id: ID!
     ): Post @delete
+
+    loginTest(
+        email: String!
+        password: String!
+        device_name: String!
+    ): AccessTokenTest! @field(resolver: "App\\GraphQL\\Mutations\\LoginTestResolver")
 }
 
 type User {
@@ -62,4 +70,8 @@ type Post {
     body: String!
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+type AccessTokenTest {
+    token: String!
 }
