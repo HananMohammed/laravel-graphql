@@ -75,3 +75,5 @@ type Post {
 type AccessTokenTest {
     token: String!
 }
+
+#import sanctum.graphql
